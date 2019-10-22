@@ -12,3 +12,16 @@ function myFunction() {
     activeCnt = activeCnt + 1;
   }
 }
+
+// menu追加
+function onOpen(event){
+  // 配列で登録したいメニューを追加する
+  var func = [
+    // name:部分にメニューで表示したい名前
+    // functionName:登録したいfunction名
+    {name:'appranking', functionName:'myFunction'}
+  ];
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  // Sheet上のメニューに登録する名前
+  sheet.addMenu('myMenu', func);
+}
