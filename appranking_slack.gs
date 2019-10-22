@@ -1,30 +1,46 @@
 // 起動するファンクション
 function myFunction() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName('base');
   var dbsheet = ss.getSheetByName('db');
   
   // ここで事前に生成したURLを呼び出して結果を取得
-  var resJson = UrlFetchApp.fetch("https://rss.itunes.apple.com/api/v1/jp/ios-apps/top-free/games/10/explicit.json");
+  var resJson = UrlFetchApp.fetch("https://rss.itunes.apple.com/api/v1/jp/ios-apps/top-free/games/100/explicit.json");
   // JavaScriptで扱いやすくするため戻ってきた結果をJsonからJavaScriptのオブジェクトに変換
   var res = JSON.parse(resJson);
   // アプリ毎の配列でループ処理して結果の一部をシートの対象セルにセット
   var activeCnt = 1;
+  var slackmsg = "";
   for (var cnt in res.feed.results) {
     // db sheet情報とチェックするアプリ名を渡す
     var ret = appCheck(dbsheet, res.feed.results[cnt], cnt);
     if (ret) {
       // rank
-      sheet.getRange(activeCnt, 1).setValue(parseInt(cnt) + 1);
-      // アプリ名
-      sheet.getRange(activeCnt, 2).setValue(res.feed.results[cnt].name);
-      // アプリ制作会社
-      sheet.getRange(activeCnt, 3).setValue(res.feed.results[cnt].artistName);
-      // リリース日
-      sheet.getRange(activeCnt, 4).setValue(res.feed.results[cnt].releaseDate);
+      slackmsg = slackmsg + "rank:" + (parseInt(cnt) + 1) + "\n";
+      slackmsg = slackmsg + "アプリ名:" + res.feed.results[cnt].name + "\n";
+      slackmsg = slackmsg + "アプリ会社:" + res.feed.results[cnt].artistName + "\n";
+      slackmsg = slackmsg + "リリース日:" + res.feed.results[cnt].releaseDate + "\n";
+      slackmsg = slackmsg + "URL:" + res.feed.results[cnt].url + "\n";
+      slackmsg = slackmsg + "----------\n"
       activeCnt = activeCnt + 1;
     }
   }
+  slackPost(slackmsg);
+}
+
+// Slack送信用Function
+function slackPost(message) {
+  var jsonData = {
+     "username" : "gasbot",
+     "text" : message
+  };
+  var payload = JSON.stringify(jsonData);
+  var options = {
+    "method" : "post",
+    "contentType" : "application/json",
+    "payload" : payload
+  };
+  // https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+  UrlFetchApp.fetch("https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX", options);
 }
 
 // 以前にdb sheetに登録済みかどうかをチェックする
