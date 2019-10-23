@@ -24,6 +24,10 @@ function myFunction() {
       activeCnt = activeCnt + 1;
     }
   }
+  if (!slackmsg) {
+    // 新着アプリがない場合のメッセージ送信
+    slackmsg = "新規アプリはありません"
+  }
   slackPost(slackmsg);
 }
 
@@ -40,7 +44,7 @@ function slackPost(message) {
     "payload" : payload
   };
   // https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
-  UrlFetchApp.fetch("https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX", options);
+  UrlFetchApp.fetch("https://hooks.slack.com/services/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", options);
 }
 
 // 以前にdb sheetに登録済みかどうかをチェックする
