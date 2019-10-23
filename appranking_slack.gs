@@ -44,7 +44,7 @@ function slackPost(message) {
     "payload" : payload
   };
   // https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
-  UrlFetchApp.fetch("https://hooks.slack.com/services/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", options);
+  UrlFetchApp.fetch("https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX", options);
 }
 
 // 以前にdb sheetに登録済みかどうかをチェックする
